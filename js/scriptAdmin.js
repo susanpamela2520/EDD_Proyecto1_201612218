@@ -513,6 +513,45 @@ class ArbolB{
     };
     
 
+
+    /Constantes Carga Masiva Podcast/
+    const dropAreaMusica = document.querySelector("#drop-areaMusica");
+    const buttonMusica = dropAreaMusica.querySelector("button")
+    const inputMusica = dropAreaMusica.querySelector("#input-fileMusica");
+
+
+    /Carga Masiva  Podcast/
+    buttonMusica.addEventListener("click", (e)=>{
+        inputMusica.click();
+    });
+    
+    inputMusica.addEventListener("change", ()=>{
+    
+        processFilePodcast(inputMusica.files[0]);
+    });
+    
+    function processFileMusica(file){
+            const fileReader = new FileReader();
+            
+            fileReader.addEventListener('load', e =>{
+                const fileUrl = fileReader.result;
+            const archivo = JSON.parse(fileUrl);
+            alert("leido")
+            
+            var matrizMusicaFinal = JSON.parse(localStorage.getItem("matrizPodcast"));
+            var matrizMusicaFinal2 = new Matriz(matrizMusicaFinal.colsList, matrizMusicaFinal.rowsList);
+            archivo.forEach(element => {
+               matrizMusicaFinal2.insertar(element.month, element.day, element.month, element.day, element.song, element.artist);
+            });
+    
+            localStorage.setItem("matrizPodcast", JSON.stringify(matrizMusicaFinal2));
+    
+            });
+                    
+            fileReader.readAsText(file);
+    };
+    
+    
     /Matriz Dispersa  para Musica Programada/
     // Matriz Dispersa
 
@@ -526,7 +565,10 @@ class ArbolB{
     
             this.x = x;
             this.y = y;
-            this.obj = obj;
+            this.month = month;
+            this.day = day;
+            this.song = song;
+            this.artist = artist;
         }
     }
     
@@ -543,13 +585,14 @@ class ArbolB{
     
     
     class Matriz {
-        constructor() {
-            this.colsList = new Header();
-            this.rowsList = new Header();
+        constructor(colsList = new Header(), rowsList = new Header()) {
+            this.colsList = colsList;
+            this.rowsList = rowsList;
         }
     
-        insertar(x, y, obj) {
-            let cell = new NodoMatriz(x, y, obj);
+        insertar(x, y, month, day, song, artist) {
+            let cell = new NodoMatriz(x, y, month, day, song, artist);
+            
     
             let columna = this.colsList.getHeader(y);
             if (columna == null) {
@@ -608,12 +651,15 @@ class ArbolB{
             }
         }
     
-        exportRender() {
-            console.log(this.configraph());
-            d3.select("#lienzo").graphviz()
-            .width(900)
-            .height(500)
-            .renderDot(this.configraph())
+        generarImagen(){
+            var picture2 = document.getElementById("contenedor")
+            picture2.innerHTML = ""
+            picture2.innerHTML = "<div id=\"grafica\"></div>"
+            d3.select("#grafica")
+                .graphviz()
+                .fit(true)
+                .renderDot(this.configraph())
+                
         }
     
     
@@ -627,14 +673,9 @@ class ArbolB{
             temp += this.nodoY();
             temp += this.RowsbyR();
     
-    
-    
             temp += this.renderNodes();
     
             temp += this.graphRanks();
-    
-    
-    
     
             temp += "}}";
             return temp.toString();
@@ -872,11 +913,25 @@ class ArbolB{
                 }
             }
         }
-    }
+    };
 
 
 
+//Boton de grafica Artistas
+const btnMusica = document.getElementById("btn-Musica")
+btnMusica.addEventListener("click" , function(){
 
+    var matrizMusicaFinal = JSON.parse(localStorage.getItem("matrizMusica"));
+    var matrizMusica2 = new Matriz(matrizMusicaFinal.colsList, matrizMusicaFinal.rowsList);
+    matrizMusica2.generarImagen();
+});
+
+if(!localStorage.getItem("matrizMusica")){
+    var matrizMusica = new Matriz();
+    localStorage.setItem("matrizMusica", JSON.stringify(matrizMusica)); /*listaSimpleUsuarios, variable donde se guarda info de lista de Usuarios*/
+} else{
+    console.log(JSON.parse(localStorage.getItem("matrizMusica")));
+};
 
 
 
