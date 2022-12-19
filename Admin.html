@@ -1,0 +1,133 @@
+<!--Vista Administrador-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login y Registro</title>
+    <link rel="stylesheet" href="assets/css/estilos2.css">
+</head>
+
+<body>
+
+    <div class="VistaAdmin">
+
+
+        <header class="header__superior">
+            <div class="logo">
+                <img src="https://github.com/susanpamela2520/picture/blob/main/mustercloud.png?raw=true" alt="">
+            </div>
+
+            <div class="container__menu">
+                <div class="menu">
+                    <nav>
+                        <ul> <!--Opciones de Menu-->
+                            <!--Usuarios-->
+                            <li><a href="#">Usuario</a>
+                                <ul>
+                                    <li><a href="#">Carga Masiva</a>
+                                        <div class="drop-area" id="drop-areaUsuarios"> <!--Prueba Carga Masiva-->
+                                            <h2>Arrastra tu archivo</h2>
+                                            <span>0</span>
+                                            <button>Selecciona tu archivo</button>
+                                            <input type="file" name="" id="input-fileUsuarios" hidden multiple>
+                                        </div>
+                                        <div id="preview"></div>
+                                    </li>
+                                    <li><a href="#" id="btn-grafUsuarios">Grafica</a></li>
+                                </ul>
+                            </li>
+                            
+                            <!--Artistas-->
+                            <li><a href="#">Artista</a>
+                                <ul>
+                                    <li><a href="#">Carga Masiva</a>
+                                        <div class="drop-area" id="drop-areaArtista"> <!--Prueba Carga Masiva-->
+                                            <h2>Arrastra tu archivo</h2>
+                                            <span>0</span>
+                                            <button>Selecciona tu archivo</button>
+                                            <input type="file" name="" id="input-fileArtista" hidden multiple>
+                                        </div>
+                                        <div id="preview"></div>
+                                            </li>
+                                        <li><a href="#" id="btn-Artista">Grafica</a></li>
+                                </ul>
+                            </li>
+
+                            <!--Canciones-->
+                            <li><a href="#">Canciones</a>
+                                <ul>
+                                    <li><a href="#">Carga Masiva</a>
+                                        <div class="drop-area" id="drop-areaCanciones"> <!--Prueba Carga Masiva-->
+                                            <h2>Arrastra tu archivo</h2>
+                                            <span>0</span>
+                                            <button>Selecciona tu archivo</button>
+                                            <input type="file" name="" id="input-fileCanciones" hidden multiple>
+                                        </div>
+                                        <div id="preview"></div>
+                                    </li>
+
+                                    <li><a href="#" id="btn-Canciones">Grafica</a></li>
+                                </ul>
+                            </li>
+
+                            <!--Podcast-->
+                            <li><a href="#">Podcast</a>
+                                <ul>
+                                    <li><a href="#">Carga Masiva</a>
+                                        <div class="drop-area" id="drop-areaPodcast"> <!--Prueba Carga Masiva-->
+                                            <h2>Arrastra tu archivo</h2>
+                                            <span>0</span>
+                                            <button>Selecciona tu archivo</button>
+                                            <input type="file" name="" id="input-filePodcast" hidden multiple>
+                                        </div>
+                                        <div id="preview"></div>
+                                    
+                                    </li>
+                                    <li><a href="#" id="btn-podcast">Grafica</a></li>
+                                </ul>
+                            </li>
+
+                            
+                            <li><a href="#">Musica Programada</a>
+                                <ul>
+                                    <li><a href="#">Carga Masiva</a>
+                                        <div class="drop-area"> <!--Prueba Carga Masiva-->
+                                            <h2>Arrastra tu archivo</h2>
+                                            <span>0</span>
+                                            <button>Selecciona tu archivo</button>
+                                            <input type="file" name="" id="input-file" hidden multiple>
+                                        </div>
+                                        <div id="preview"></div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Salir</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <script src="js/scriptAdmin.js" type="module"></script>
+
+        </header>
+
+    </div>
+
+
+    <div id="contenedor">
+        <div id="grafica">
+
+        </div>
+    </div>
+
+    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+    <script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+    
+
+</body>
+
+</html>
