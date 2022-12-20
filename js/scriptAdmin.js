@@ -1,5 +1,5 @@
 import "./js-sha256.js"
-
+//localStorage.clear();
 
 
 /Carga Masiva consts/
@@ -160,7 +160,6 @@ class listaSimple {//clase lista, donde se crea la lista simple
         this.size++;
     };
 
-
     buscarData(usuario, password){
              let actual = this.cabeza;
              while(actual != null){
@@ -197,7 +196,6 @@ class listaSimple {//clase lista, donde se crea la lista simple
         this.generarImagen(codigodot);
     }
 
-
     generarImagen(codigodot){
 
         var picture = document.getElementById("contenedor")
@@ -211,6 +209,7 @@ class listaSimple {//clase lista, donde se crea la lista simple
     }
 
 };
+
 //Boton de grafica 
 const btnGrafica = document.getElementById("btn-grafUsuarios")
 btnGrafica.addEventListener("click" , function(){
@@ -255,7 +254,6 @@ class listadelistas {
         this.ultimo = ultimo;
         this.size = size;
     }
-
     //insertar en la Primera ListaCircular
     agregarPrinCircular(nameArtist, age, country){
         var temporal = new NodoListPrin(nameArtist, age, country);
@@ -316,6 +314,8 @@ class listadelistas {
     grafocanciones(){
         var ArtistaActual = this.primero
         var codigodot = ""
+        var contador = 0;
+        
         while (ArtistaActual != null) {
             var temporal = ArtistaActual.abajo;
             var conex = "";
@@ -323,11 +323,15 @@ class listadelistas {
             var sizegraph = 0;
             let artista= String(ArtistaActual.nameArtist);
             artista= artista.replace(' ','');
+            if (temporal != null) {
+                codigodot += "N" + contador + " -> N0" +  artista + ";\n";
+            }
+
             while(temporal != null){
-                nodos += "N" + sizegraph+ artista + "[label=\"" + temporal.name2 + "\" ];\n"
+                nodos += "N" + sizegraph+ artista + "[label=\"" + temporal.name2 + "\", style=filled, fillcolor=seashell2, color=pink];\n"
                 if(temporal.siguiente != null){
                     var auxnum = sizegraph+1;
-                    conex += "N" + sizegraph+ ArtistaActual.nameArtist  + " -> N" +  auxnum+ ArtistaActual.nameArtist  + ";\n";
+                    conex += "N" + sizegraph+ ArtistaActual.nameArtist.replace(" ","")  + " -> N" +  auxnum+ ArtistaActual.nameArtist.replace(" ", "") + ";\n";
                 }
                 temporal = temporal.siguiente;
                 sizegraph ++;
@@ -337,6 +341,7 @@ class listadelistas {
             codigodot += "//agregado conexiones o flechas\n"
             codigodot += "{\n" + conex + "\n}"
             ArtistaActual = ArtistaActual.siguiente
+            contador ++
         }
         return codigodot
     }
@@ -422,11 +427,9 @@ class NodoArbolBinario{
         this.duration = duration;
         this.izquierda = null;
         this.derecha = null;
-    
-        
+          
  };
 };
-
 
 class ArbolB{
 
@@ -494,7 +497,6 @@ class ArbolB{
 
 };
 
-
     //Boton de grafica Podcast
 
     const btnpodcast = document.getElementById("btn-podcast")
@@ -514,20 +516,204 @@ class ArbolB{
     
 
 
-    /Constantes Carga Masiva Podcast/
+    /Constantes Carga Masiva Musica/
     const dropAreaMusica = document.querySelector("#drop-areaMusica");
     const buttonMusica = dropAreaMusica.querySelector("button")
     const inputMusica = dropAreaMusica.querySelector("#input-fileMusica");
 
+    var
+  // should be a not so common char
+  // possibly one JSON does not encode
+  // possibly one encodeURIComponent does not encode
+  // right now this char is '~' but this might change in the future
+  specialChar = '~',
+  safeSpecialChar = '\\x' + (
+    '0' + specialChar.charCodeAt(0).toString(16)
+  ).slice(-2),
+  escapedSafeSpecialChar = '\\' + safeSpecialChar,
+  specialCharRG = new RegExp(safeSpecialChar, 'g'),
+  safeSpecialCharRG = new RegExp(escapedSafeSpecialChar, 'g'),
 
-    /Carga Masiva  Podcast/
+  safeStartWithSpecialCharRG = new RegExp('(?:^|([^\\\\]))' + escapedSafeSpecialChar),
+
+  indexOf = [].indexOf || function(v){
+    for(var i=this.length;i--&&this[i]!==v;);
+    return i;
+  },
+  $String = String  // there's no way to drop warnings in JSHint
+                    // about new String ... well, I need that here!
+                    // faked, and happy linter!
+;
+
+function generateReplacer(value, replacer, resolve) {
+  var
+    doNotIgnore = false,
+    inspect = !!replacer,
+    path = [],
+    all  = [value],
+    seen = [value],
+    mapp = [resolve ? specialChar : '[Circular]'],
+    last = value,
+    lvl  = 1,
+    i, fn
+  ;
+  if (inspect) {
+    fn = typeof replacer === 'object' ?
+      function (key, value) {
+        return key !== '' && indexOf.call(replacer, key) < 0 ? void 0 : value;
+      } :
+      replacer;
+  }
+  return function(key, value) {
+    // the replacer has rights to decide
+    // if a new object should be returned
+    // or if there's some key to drop
+    // let's call it here rather than "too late"
+    if (inspect) value = fn.call(this, key, value);
+
+    // first pass should be ignored, since it's just the initial object
+    if (doNotIgnore) {
+      if (last !== this) {
+        i = lvl - indexOf.call(all, this) - 1;
+        lvl -= i;
+        all.splice(lvl, all.length);
+        path.splice(lvl - 1, path.length);
+        last = this;
+      }
+      // console.log(lvl, key, path);
+      if (typeof value === 'object' && value) {
+    	// if object isn't referring to parent object, add to the
+        // object path stack. Otherwise it is already there.
+        if (indexOf.call(all, value) < 0) {
+          all.push(last = value);
+        }
+        lvl = all.length;
+        i = indexOf.call(seen, value);
+        if (i < 0) {
+          i = seen.push(value) - 1;
+          if (resolve) {
+            // key cannot contain specialChar but could be not a string
+            path.push(('' + key).replace(specialCharRG, safeSpecialChar));
+            mapp[i] = specialChar + path.join(specialChar);
+          } else {
+            mapp[i] = mapp[0];
+          }
+        } else {
+          value = mapp[i];
+        }
+      } else {
+        if (typeof value === 'string' && resolve) {
+          // ensure no special char involved on deserialization
+          // in this case only first char is important
+          // no need to replace all value (better performance)
+          value = value .replace(safeSpecialChar, escapedSafeSpecialChar)
+                        .replace(specialChar, safeSpecialChar);
+        }
+      }
+    } else {
+      doNotIgnore = true;
+    }
+    return value;
+  };
+}
+
+function retrieveFromPath(current, keys) {
+  for(var i = 0, length = keys.length; i < length; current = current[
+    // keys should be normalized back here
+    keys[i++].replace(safeSpecialCharRG, specialChar)
+  ]);
+  return current;
+}
+
+function generateReviver(reviver) {
+  return function(key, value) {
+    var isString = typeof value === 'string';
+    if (isString && value.charAt(0) === specialChar) {
+      return new $String(value.slice(1));
+    }
+    if (key === '') value = regenerate(value, value, {});
+    // again, only one needed, do not use the RegExp for this replacement
+    // only keys need the RegExp
+    if (isString) value = value .replace(safeStartWithSpecialCharRG, '$1' + specialChar)
+                                .replace(escapedSafeSpecialChar, safeSpecialChar);
+    return reviver ? reviver.call(this, key, value) : value;
+  };
+}
+
+function regenerateArray(root, current, retrieve) {
+  for (var i = 0, length = current.length; i < length; i++) {
+    current[i] = regenerate(root, current[i], retrieve);
+  }
+  return current;
+}
+
+function regenerateObject(root, current, retrieve) {
+  for (var key in current) {
+    if (current.hasOwnProperty(key)) {
+      current[key] = regenerate(root, current[key], retrieve);
+    }
+  }
+  return current;
+}
+
+function regenerate(root, current, retrieve) {
+  return current instanceof Array ?
+    // fast Array reconstruction
+    regenerateArray(root, current, retrieve) :
+    (
+      current instanceof $String ?
+        (
+          // root is an empty string
+          current.length ?
+            (
+              retrieve.hasOwnProperty(current) ?
+                retrieve[current] :
+                retrieve[current] = retrieveFromPath(
+                  root, current.split(specialChar)
+                )
+            ) :
+            root
+        ) :
+        (
+          current instanceof Object ?
+            // dedicated Object parser
+            regenerateObject(root, current, retrieve) :
+            // value as it is
+            current
+        )
+    )
+  ;
+}
+
+var CircularJSON = {
+  stringify: function stringify(value, replacer, space, doNotResolve) {
+    return CircularJSON.parser.stringify(
+      value,
+      generateReplacer(value, replacer, !doNotResolve),
+      space
+    );
+  },
+  parse: function parse(text, reviver) {
+    return CircularJSON.parser.parse(
+      text,
+      generateReviver(reviver)
+    );
+  },
+  // A parser should be an API 1:1 compatible with JSON
+  // it should expose stringify and parse methods.
+  // The default parser is the native JSON.
+  parser: JSON
+};
+
+
+    /Carga Masiva  Musica/
     buttonMusica.addEventListener("click", (e)=>{
         inputMusica.click();
     });
     
     inputMusica.addEventListener("change", ()=>{
     
-        processFilePodcast(inputMusica.files[0]);
+        processFileMusica(inputMusica.files[0]);
     });
     
     function processFileMusica(file){
@@ -538,14 +724,16 @@ class ArbolB{
             const archivo = JSON.parse(fileUrl);
             alert("leido")
             
-            var matrizMusicaFinal = JSON.parse(localStorage.getItem("matrizPodcast"));
+            var matrizMusicaFinal = CircularJSON.parse(localStorage.getItem("matrizMusica"));
             var matrizMusicaFinal2 = new Matriz(matrizMusicaFinal.colsList, matrizMusicaFinal.rowsList);
             archivo.forEach(element => {
                matrizMusicaFinal2.insertar(element.month, element.day, element.month, element.day, element.song, element.artist);
             });
-    
-            localStorage.setItem("matrizPodcast", JSON.stringify(matrizMusicaFinal2));
-    
+            
+            matrizMusicaFinal2.generarImagen();
+            localStorage.setItem("matrizMusica", CircularJSON.stringify(matrizMusicaFinal2));
+            var matriz2 = CircularJSON.parse(localStorage.getItem(matriz2))
+            matriz2.generarImagen();
             });
                     
             fileReader.readAsText(file);
@@ -586,13 +774,12 @@ class ArbolB{
     
     class Matriz {
         constructor(colsList = new Header(), rowsList = new Header()) {
-            this.colsList = colsList;
-            this.rowsList = rowsList;
+            this.colsList = new Header();
+            this.rowsList = new Header();
         }
     
-        insertar(x, y, month, day, song, artist) {
-            let cell = new NodoMatriz(x, y, month, day, song, artist);
-            
+        insertar(x, y,  month, day, song, artist) {
+            let cell = new NodoMatriz(x, y,  month, day, song, artist);
     
             let columna = this.colsList.getHeader(y);
             if (columna == null) {
@@ -651,6 +838,7 @@ class ArbolB{
             }
         }
     
+        
         generarImagen(){
             var picture2 = document.getElementById("contenedor")
             picture2.innerHTML = ""
@@ -659,9 +847,8 @@ class ArbolB{
                 .graphviz()
                 .fit(true)
                 .renderDot(this.configraph())
-                
-        }
-    
+            }
+
     
         configraph() {
             let temp = "";
@@ -673,9 +860,14 @@ class ArbolB{
             temp += this.nodoY();
             temp += this.RowsbyR();
     
+    
+    
             temp += this.renderNodes();
     
             temp += this.graphRanks();
+    
+    
+    
     
             temp += "}}";
             return temp.toString();
@@ -756,7 +948,7 @@ class ArbolB{
                     temp += "Y";
                     temp += aux.y;
                     temp += '[label="';
-                    temp += aux.obj;
+                    temp += aux.song;
                     temp += '", group=';
                     temp += aux.y;
                     temp += "];\n";
@@ -917,20 +1109,20 @@ class ArbolB{
 
 
 
-//Boton de grafica Artistas
+//Boton de grafica Musica Programada
 const btnMusica = document.getElementById("btn-Musica")
 btnMusica.addEventListener("click" , function(){
 
-    var matrizMusicaFinal = JSON.parse(localStorage.getItem("matrizMusica"));
+    var matrizMusicaFinal = CircularJSON.parse(localStorage.getItem("matrizMusica"));
     var matrizMusica2 = new Matriz(matrizMusicaFinal.colsList, matrizMusicaFinal.rowsList);
     matrizMusica2.generarImagen();
 });
 
 if(!localStorage.getItem("matrizMusica")){
     var matrizMusica = new Matriz();
-    localStorage.setItem("matrizMusica", JSON.stringify(matrizMusica)); /*listaSimpleUsuarios, variable donde se guarda info de lista de Usuarios*/
+    localStorage.setItem("matrizMusica", CircularJSON.stringify(matrizMusica)); /*listaSimpleUsuarios, variable donde se guarda info de lista de Usuarios*/
 } else{
-    console.log(JSON.parse(localStorage.getItem("matrizMusica")));
+    console.log(CircularJSON.parse(localStorage.getItem("matrizMusica")));
 };
 
 
