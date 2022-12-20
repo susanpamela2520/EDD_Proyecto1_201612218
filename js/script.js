@@ -141,6 +141,37 @@ formLogin.addEventListener("submit" , function(event){
 });
 
 
+//Registro en formulario
+
+const formRegistro = document.getElementById("formulario-Registro")
+
+formRegistro.addEventListener("submit" , function(event){
+
+    const UsuarioBox = document.getElementById("Reg-Usuario")
+    const NameBox = document.getElementById("Reg-Name")
+    const DPIBox = document.getElementById("Reg-DPI")
+    const TelBox = document.getElementById("Reg-Tel")
+    const PasswBox = document.getElementById("Reg-Pass")
+   
+
+    var usuarioReg = UsuarioBox.value
+    var NameReg = NameBox.value
+    var DPI = DPIBox.value
+    var Tel = TelBox.value
+    var passReg = PasswBox.value
+
+
+    var listaUsuariosFinal = JSON.parse(localStorage.getItem("listaSimpleUsuarios"));
+    var listaUsuarios2 = new listaSimple(listaUsuariosFinal.cabeza, listaUsuariosFinal.size);
+    listaUsuarios2.agregarData(DPI,NameReg, usuarioReg, passReg, Tel);
+    event.preventDefault();
+    
+    localStorage.setItem("listaSimpleUsuarios", JSON.stringify(listaUsuarios2));
+    alert("Usuario Registrado")
+    console.log(listaUsuarios2)
+
+});
+
 
 
 
